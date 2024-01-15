@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<root>
+  <nav>
+    <position>fixed</position>
+    <width>100%</width>
+    <display>flex</display>
+    <justifyContent>space-between</justifyContent>
+    <padding>20px</padding>
+  </nav>
+  <button>
+    <border>solid 1px rgb(90, 90, 90)</border>
+    <fontSize>16px</fontSize>
+    <padding>14px 20px</padding>
+    <borderRadius>5px</borderRadius>
+  </button>
+</root>
