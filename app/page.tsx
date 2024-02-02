@@ -1,13 +1,16 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useActive } from '@phatdev/hooks';
-import Image from 'next/image'
 import styles from './page.module.css'
 import LocomotiveScroll from 'locomotive-scroll';
 import { gsap } from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
 import { useStyle } from '@phatdev/hooks/useStyle';
 import { Object3D } from '@phatdev/utils/object';
+import vertexShader from '@phatdev/shaders/vertex.glsl';
+import fragmentShader from '@phatdev/shaders/fragment.glsl';
+import * as THREE from 'three';
+
 gsap.registerPlugin(TextPlugin);
 
 type props = {
@@ -76,30 +79,61 @@ export default function Home() {
 
   useActive(async () => {
     const wasm = await import('@phatdev/pkg');
-    fetch('/class.json').then(res => res.json()).then(async data => {
-      let result = await wasm.generate_random_string(20);
-      result = data.main+'_'+result;
-      setTitleName(result); 
-    })
+    let result = await wasm.jsonRequest(
+      window.location.hostname+(window.location.hostname == "localhost" && `:${window.location.port}`), 
+      '/class.json', 
+      window.location.protocol === "https:"
+    );
+    
+    result = result.main+'_'+(await wasm.generate_random_string(20));
+    setTitleName(result);
   }, []);
 
   useEffect(() => {
     styleTitle(titleName);
-    const obj = new Object3D(document.body, 0, 0);
-    obj.base.append();
-  }, [titleName])
+  }, [titleName]);
 
-  
-  
+  useEffect(() => {
+    if(typeof window !== "undefined") {
+      const obj = new Object3D(document.body, 0, 0);
+      const geometry = new THREE.PlaneGeometry(1, 1, 200, 200);
+      const material = new THREE.ShaderMaterial({ 
+        extensions: {
+        derivatives: true // https://discourse.threejs.org/t/warning-0-gl-oes-standard-derivatives-extension-is-not-supported/24420
+        },
+        side: THREE.DoubleSide,
+        wireframe: true,
+        /**
+         * This option has been set since
+         * https://threejs.org/docs/#api/en/materials/ShaderMaterial
+         */
+        uniforms: {
+          time: {
+            value: 0.0,
+          },
+          resolution: {
+            value: new THREE.Vector4()
+          },
+        },
+      
+        vertexShader: vertexShader,
+        fragmentShader: fragmentShader
+      });
+      
+
+      const cube = new THREE.Mesh(geometry, material);
+      const light = new THREE.DirectionalLight(0xffffff, 0.5);
+
+      obj.base.append(light, cube);
+    }
+  }, [])
+
   return (
-    <div>
+    <div style={cssObject.mainContainer}>
       <div style={cssObject.nav}>
         <div style={{
           
         }}></div>
-        <div>
-          <button style={cssObject.button} className={styles.btnhov} >Enter your name</button>
-        </div>
       </div>
       <MainPage titleName={titleName}/>
     </div>

@@ -13,4 +13,8 @@
     <padding>14px 20px</padding>
     <borderRadius>5px</borderRadius>
   </button>
+  <mainContainer>
+    <position>relative</position>
+    <zIndex>10</zIndex>
+  </mainContainer>
 </root>
