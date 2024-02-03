@@ -6,10 +6,9 @@ import LocomotiveScroll from 'locomotive-scroll';
 import { gsap } from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
 import { useStyle } from '@phatdev/hooks/useStyle';
-import { Object3D } from '@phatdev/utils/object';
+import { Engine } from '@phatdev/utils/engine';
 import vertexShader from '@phatdev/shaders/vertex.glsl';
 import fragmentShader from '@phatdev/shaders/fragment.glsl';
-import * as THREE from 'three';
 
 gsap.registerPlugin(TextPlugin);
 
@@ -95,34 +94,12 @@ export default function Home() {
 
   useEffect(() => {
     if(typeof window !== "undefined") {
-      const obj = new Object3D(document.body, 0, 0);
-      const geometry = new THREE.PlaneGeometry(1, 1, 200, 200);
-      const material = new THREE.ShaderMaterial({ 
-        extensions: {
-        derivatives: true // https://discourse.threejs.org/t/warning-0-gl-oes-standard-derivatives-extension-is-not-supported/24420
-        },
-        side: THREE.DoubleSide,
-        wireframe: true,
-        /**
-         * This option has been set since
-         * https://threejs.org/docs/#api/en/materials/ShaderMaterial
-         */
-        uniforms: {
-          time: {
-            value: 0.0,
-          },
-          resolution: {
-            value: new THREE.Vector4()
-          },
-        },
+      const obj = new Engine(document.body, 0, 0);
+      const geometry = Engine.createPlaneGeometry(1, 1, 100, 100);
+      const material = Engine.createShader(vertexShader, fragmentShader);
       
-        vertexShader: vertexShader,
-        fragmentShader: fragmentShader
-      });
-      
-
-      const cube = new THREE.Mesh(geometry, material);
-      const light = new THREE.DirectionalLight(0xffffff, 0.5);
+      const cube = Engine.createMesh(geometry, material);
+      const light = Engine.createDirectionalLight(0xffffff, 0.5);
 
       obj.base.append(light, cube);
     }

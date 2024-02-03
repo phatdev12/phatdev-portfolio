@@ -75,7 +75,9 @@ float snoise(vec3 v){
 void main() {
     vColor = vec3(1.);
 
-    // float noise = snoise(vec3(uv, time*0.1))
+    float noise = snoise(vec3(uv, time*0.1));
+    vec3 pos = vec3(position.x, position.y. position.z + noise * 0.5);
+
     vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }
