@@ -84,7 +84,7 @@ export default function Home() {
 
   useActive(async () => {
    if(typeof window !== "undefined") {
-    clientEvent.on('systemLoaded', async function() {
+    clientEvent.on('domLoaded', async function() {
       let result = await window.system.jsonRequest(
         window.location.hostname+(window.location.hostname == "localhost" && `:${window.location.port}`), 
         '/class.json', 
