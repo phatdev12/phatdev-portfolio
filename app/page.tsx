@@ -17,6 +17,8 @@ type props = {
   titleName: string,
 }
 export function MainPage(props: props) {
+  const cssObject = useStyle('main');
+
   return (
     <main data-scroll-container className={styles.main}>
       <div data-scroll-section>
@@ -30,7 +32,11 @@ export function MainPage(props: props) {
         <span>{"Fresh inspiration caused this website to be born."}</span>
       </div>
       <div data-scroll-section>
-        <h1>{new Date().getFullYear()}</h1>
+        <h1 style={{
+          color: '#000',
+          WebkitTextStroke: '2px #757575',
+          ...cssObject.year
+        }}>{new Date().getFullYear()}</h1>
       </div>
     </main>
   )
@@ -38,8 +44,10 @@ export function MainPage(props: props) {
 
 export default function Home() {
   const [titleName, setTitleName] = useState('');
-  const cssObject = useStyle('root');
+  const [metaLength, setMetaLength] = useState(0);
 
+  const cssObject = useStyle('root');
+  
   var created = false;
   var time = 0.0;
 
@@ -60,11 +68,16 @@ export default function Home() {
         opacity: 1,
         duration: 1,
         ease: 'expo'
-      }).from('.title-animation2', {
+      }).fromTo('.title-animation2', {
         autoAlpha: 2,
         y: 100,
-        duration: 1.4,
+        duration: 1,
         ease: 'power3'
+      }, {
+        y: 0,
+        opacity: 1,
+        duration: 2.0,
+        ease: 'expo'
       }, '-=1')
       const title = document.querySelectorAll(`.${titleName}`) as NodeListOf<Element>;
       if(title) {
@@ -85,6 +98,7 @@ export default function Home() {
   useActive(async () => {
    if(typeof window !== "undefined") {
     clientEvent.on('domLoaded', async function() {
+      setMetaLength(Math.floor(window.innerWidth/84.78));
       let result = await window.system.jsonRequest(
         window.location.hostname+(window.location.hostname == "localhost" && `:${window.location.port}`), 
         '/class.json', 
@@ -92,6 +106,7 @@ export default function Home() {
       );
       
       result = result.main+'_'+(await window.system.generate_random_string(20));
+      console.log(metaLength);
       setTitleName(result);
     })
    }
@@ -128,10 +143,46 @@ export default function Home() {
 
   return (
     <div style={cssObject.mainContainer}>
+      <div style={{
+        padding: '5px',
+        display: 'flex',
+        gap: '10px',
+        background: '#000',
+        justifyContent: "center",
+        position: 'relative',
+        zIndex: '23',
+        borderBottom: '1px solid rgb(50, 50, 50)'
+      }}>
+        {Array(metaLength).fill(<>
+          <span style={{
+            gap: '5px'
+          }}>CREATIVE</span>
+        </>)}
+      </div>
       <div style={cssObject.nav}>
         <div style={{
-          
-        }}></div>
+          padding: '60px 35px'
+        }}>
+          <ul style={{
+            display: 'flex',
+            gap: '30px',
+            alignItems: 'center',
+            fontWeight: '500',
+            fontSize: '16px',
+          }}>
+            <li>Home</li>
+            <li>About</li>
+            <li><button style={{
+              padding: '15px 25px',
+              background: '#fff',
+              fontSize: '16px',
+              color: '#000',
+              marginLeft: '10px',
+              borderRadius: '5px',
+              border: 'none'
+            }}>Follow me on github</button></li>
+          </ul>
+        </div>
       </div>
       <MainPage titleName={titleName}/>
     </div>

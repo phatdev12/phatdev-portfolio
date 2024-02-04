@@ -11,6 +11,7 @@
   "dependencies": {
     "@react-three/drei": "^9.89.0",
     "@react-three/fiber": "^8.15.14",
+    "detect-gpu": "^5.0.38",
     "glslify-loader": "^2.0.0",
     "gsap": "^3.12.3",
     "locomotive-scroll": "^4.1.4",
