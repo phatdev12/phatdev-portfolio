@@ -9,6 +9,7 @@ import { useStyle } from '@phatdev/hooks/useStyle';
 import { Engine } from '@phatdev/utils/engine';
 import vertexShader from '@phatdev/shaders/vertex.glsl';
 import fragmentShader from '@phatdev/shaders/fragment.glsl';
+import { clientEvent } from '@phatdev/Event';
 
 gsap.registerPlugin(TextPlugin);
 
@@ -36,6 +37,9 @@ export function MainPage(props: props) {
 export default function Home() {
   const [titleName, setTitleName] = useState('');
   const cssObject = useStyle('root');
+
+  var created = false;
+  var time = 0.0;
 
   // style of title
   const styleTitle = function(titleName: string) {
@@ -77,15 +81,18 @@ export default function Home() {
   });
 
   useActive(async () => {
-    const wasm = await import('@phatdev/pkg');
-    let result = await wasm.jsonRequest(
-      window.location.hostname+(window.location.hostname == "localhost" && `:${window.location.port}`), 
-      '/class.json', 
-      window.location.protocol === "https:"
-    );
-    
-    result = result.main+'_'+(await wasm.generate_random_string(20));
-    setTitleName(result);
+   if(typeof window !== "undefined") {
+    clientEvent.on('systemLoaded', async function() {
+      let result = await window.system.jsonRequest(
+        window.location.hostname+(window.location.hostname == "localhost" && `:${window.location.port}`), 
+        '/class.json', 
+        window.location.protocol === "https:"
+      );
+      
+      result = result.main+'_'+(await window.system.generate_random_string(20));
+      setTitleName(result);
+    })
+   }
   }, []);
 
   useEffect(() => {
@@ -94,16 +101,28 @@ export default function Home() {
 
   useEffect(() => {
     if(typeof window !== "undefined") {
-      const obj = new Engine(document.body, 0, 0);
-      const geometry = Engine.createPlaneGeometry(1, 1, 100, 100);
-      const material = Engine.createShader(vertexShader, fragmentShader);
-      
-      const cube = Engine.createMesh(geometry, material);
-      const light = Engine.createDirectionalLight(0xffffff, 0.5);
+      if(created === false) {
+        const obj = new Engine(document.body, 0, 0);
+        const geometry = Engine.createPlaneGeometry(1, 1, 100, 100);
+        const material = Engine.createShader(vertexShader, fragmentShader);
+        
+        const cube = Engine.createMesh(geometry, material);
+        const light = Engine.createDirectionalLight(0xffffff, 0.5);
 
-      obj.base.append(light, cube);
+        const callbackRenderer = () => {
+          time+=0.05;
+          material.uniforms.time.value = time;
+        };
+
+        obj.base.append(light, cube);
+        obj.base.render(callbackRenderer);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        created = true;
+      }
+      
     }
-  }, [])
+  }, [created, time]);
 
   return (
     <div style={cssObject.mainContainer}>

@@ -23,8 +23,18 @@ export class Engine {
    * https://threejs.org/docs/index.html#manual/en/introduction/Creating-a-scene
    */
   private scene = new THREE.Scene();
-  private camera = new THREE.PerspectiveCamera(this.POV, this.ASPECT, this.NEAR, this.FAR);
-  private renderer = new THREE.WebGLRenderer();
+  private camera = new THREE.PerspectiveCamera(
+    this.POV, 
+    this.ASPECT, 
+    this.NEAR, 
+    this.FAR
+  );
+  private renderer = new THREE.WebGLRenderer({
+    antialias: true,
+    alpha: true,
+    precision: "highp",
+    powerPreference: "high-performance"
+  });
 
   // call base of 3d object
   public base: Base;
@@ -36,6 +46,7 @@ export class Engine {
    * @returns 
    */
   constructor(obj: HTMLElement,  x: number, y: number) {
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.camera.position.z = 5;
     this.base = new Base(obj, x,  y, this.renderer, this.scene, this.camera);
@@ -133,10 +144,6 @@ export class Base {
 
     (append.scene as THREE.Scene).add(...object);
     
-    Object.create(this)['renderer'].render(
-      Object.create(this)['scene'], 
-      Object.create(this)['camera']
-    );
   }
 
   /**
@@ -168,6 +175,19 @@ export class Base {
     obj.appendChild(renderer.domElement);
   }
 
+  public render(callback: () => void) {
+    const renderLoop = () => {
+        callback();
+         
+        Object.create(this)['renderer'].render(
+          Object.create(this)['scene'], 
+          Object.create(this)['camera']
+        );
+        requestAnimationFrame(renderLoop);
+    };
+
+    renderLoop();
+  }
   /**
    * Vietnamese:
    * Cái này code cho vui thôi chứ chả có tác dụng gì đâu đừng để ý.
