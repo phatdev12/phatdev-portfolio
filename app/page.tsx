@@ -28,7 +28,9 @@ export function MainPage(props: props) {
         <span>{"Personal page of Fosly. A well-rounded developer and a simple designer."}</span>
         <br/>
         <span>{"Fresh inspiration caused this website to be born."}</span>
-
+      </div>
+      <div data-scroll-section>
+        <h1>{new Date().getFullYear()}</h1>
       </div>
     </main>
   )

@@ -5,6 +5,7 @@ varying vec3 vColor;
 uniform vec2 pixels;
 float PI = 3.14159265359;
 
+attribute float vertexRandom;
 //	Simplex 3D Noise 
 //	by Ian McEwan, Ashima Arts
 // 
@@ -72,12 +73,15 @@ float snoise(vec3 v){
                                 dot(p2,x2), dot(p3,x3) ) );
 }
 
+
 void main() {
     vColor = vec3(1.);
 
-    float noise = snoise(vec3(uv, time*0.1));
-    //vec3 pos = vec3(position.x, position.y. position.z + noise * 0.5);
+    vec2 noiseCoord = uv*vec2(3., 5.);
+    float randomValue = 0.04 + vertexRandom * 0.5;
+    float noise = snoise(vec3(noiseCoord + time*(0.06 + vertexRandom * 0.5), time*0.2));
+    vec3 pos = vec3(position.x, position.y, position.z + noise * 0.5);
 
-    //vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }

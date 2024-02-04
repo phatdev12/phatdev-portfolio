@@ -48,6 +48,7 @@ export class Engine {
   constructor(obj: HTMLElement,  x: number, y: number) {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+
     this.camera.position.z = 5;
     this.base = new Base(obj, x,  y, this.renderer, this.scene, this.camera);
   }
