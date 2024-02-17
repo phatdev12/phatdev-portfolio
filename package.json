@@ -9,11 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@grcmichael/gscroll": "^1.0.15",
     "@mdx-js/loader": "^3.0.1",
     "@mdx-js/react": "^3.0.1",
     "@next/mdx": "^14.1.0",
     "@react-three/drei": "^9.89.0",
     "@react-three/fiber": "^8.15.14",
+    "@studio-freight/lenis": "^1.0.35",
     "@types/mdx": "^2.0.11",
     "detect-gpu": "^5.0.38",
     "glslify-loader": "^2.0.0",

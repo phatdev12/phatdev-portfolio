@@ -12,8 +12,28 @@ import { gsap } from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
 import { MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { Markdown } from '@phatdev/Markdown';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Lenis from '@studio-freight/lenis'
 
-gsap.registerPlugin(TextPlugin);
+const lenis = new Lenis({ 
+    smoothWheel: true,
+    duration: 1.88, 
+})
+
+lenis.on('scroll', (e: any) => {
+  console.log(e)
+})
+
+lenis.on('scroll', ScrollTrigger.update)
+
+gsap.registerPlugin(TextPlugin, ScrollTrigger);
+ScrollTrigger.normalizeScroll(false);
+gsap.ticker.add((time) => {
+    lenis.raf(time * 1000)
+})
+
+gsap.ticker.lagSmoothing(0)
+
 export function HomeComponent() {
     const [titleName, setTitleName] = useState('');
         const [metaLength, setMetaLength] = useState(0);
@@ -42,10 +62,10 @@ export function HomeComponent() {
                     duration: 1,
                     ease: 'expo'
                 }).fromTo('.title-animation2', {
-                    autoAlpha: 2,
+                    autoAlpha: 1,
                     y: 100,
                     duration: 1,
-                    ease: 'power3'
+                    ease: 'expo'
                 }, {
                     y: 0,
                     opacity: 1,
@@ -119,7 +139,7 @@ export function HomeComponent() {
             });
         }, [])
         return (
-            <div style={cssObject.mainContainer}>
+            <div style={cssObject.mainContainer} id="smooth-content">
                 <div style={{
                     padding: '5px',
                     display: 'flex',

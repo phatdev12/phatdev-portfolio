@@ -1,7 +1,7 @@
 declare global {
   interface Window { 
     system: {
-      generate_random_string(length: number): string;
+      generate_random_string(length: number): Promise<string>;
       jsonRequest(host: string, endpoint: string, ssl: boolean): Promise<any>;
       textRequest(host: string, endpoint: string, ssl: boolean): Promise<any>;
     };
