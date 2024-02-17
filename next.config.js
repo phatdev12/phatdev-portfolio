@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const WasmPackPlugin = require('@wasm-tool/wasm-pack-plugin');
+const withMDX = require('@next/mdx')()
 
 const nextConfig = {
   webpack: (config, { isServer }) => {
@@ -21,7 +22,8 @@ const nextConfig = {
 
     return config;
   },
-  
+  pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
+  runtime: 'edge',
 }
  
-module.exports = nextConfig
+module.exports = withMDX(nextConfig);

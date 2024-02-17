@@ -1,14 +1,15 @@
 .main {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding: 6rem;
   min-height: 100vh;
 }
 
 .title {
   active: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1em;
 }
 
 .btnhov {
