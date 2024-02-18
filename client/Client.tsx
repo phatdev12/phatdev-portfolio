@@ -22,6 +22,7 @@ export default function Client({ children }: children) {
     useActive(async () => {
         const system = await import('@phatdev/pkg');
 
+        window.targetElement = ["h1", "h2", "h3", "h4", "h5", "h6", "span", "p", "button", "a", "li"];
         window.api = System.api;
         window.owner = System.owner;
         window.repo = System.repo;
