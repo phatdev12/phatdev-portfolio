@@ -110,34 +110,60 @@ export function HomeComponent() {
         styleTitle(titleName);
         const follow = document.querySelector('.follow');
         const cur = document.querySelector('.cursor');
+        var timer: NodeJS.Timeout | null;
+        var hold: boolean;
+        var scale = 5;
         window.addEventListener('mousemove',e => {
             const {target, x, y} = e;
             if (target instanceof HTMLElement) {
                 const isTargetElement = window.targetElement.includes(target.tagName.toLowerCase());
-                console.log(isTargetElement)
+                
+                if(isTargetElement) {
+                    const mouseDown = function() {
+                        mouseUp();
+                        timer = setTimeout(active, 1200);
+                    }
+
+                    const mouseUp = function() {
+                        if(timer) clearInterval(timer);
+                        setTimeout(() => {
+                            hold = false;
+                        }, 500);
+                        
+                    }
+
+                    const active = function() {
+                        hold = true;
+                    }
+                    target.addEventListener('mousedown', mouseDown);
+                    window.addEventListener('mouseup', mouseUp);
+                }
+
                 gsap.to(cur,0.7,{
                     x, 
                     y,
                     ease: 'power4',
                     opacity: 1,
-                    transform: `scale(${isTargetElement ? 5 : 1})`,
+                    transform: `scale(${hold ? (() => {
+                        scale =  hold != true && scale == 5 ? 6 : 5;
+                        return scale;
+                    })() : 1})`
                 });
+
                 gsap.to(follow,0.9,{
                     x, 
                     y, 
-                    opacity: isTargetElement ? 0 : 1
+                    opacity: hold ? 0 : 1
                 });
+                
+                scale = 5;
             }
-            
-            
         }); 
-        document.addEventListener('mouseleave', () => {
-            gsap.to(cur, {
-              duration: 0.7,
+        window.addEventListener('mouseleave', () => {
+            gsap.to(cur, 0.7, {
               opacity: 0,
             });
-            gsap.to(follow, {
-                duration: 0.7,
+            gsap.to(follow, 0.7, {
                 opacity: 0,
             });
           });       
