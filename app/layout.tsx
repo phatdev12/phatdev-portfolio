@@ -5,6 +5,7 @@ declare global {
       jsonRequest(host: string, endpoint: string, ssl: boolean): Promise<any>;
       textRequest(host: string, endpoint: string, ssl: boolean): Promise<any>;
     };
+    targetElement: Array<string>;
     owner: string;
     repo: string;
     api: {
@@ -36,6 +37,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
+        <div className='cursor'></div>
+        <div className='follow'></div>
         <Client>
           {children}
         </Client>

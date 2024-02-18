@@ -55,7 +55,18 @@ export function MainPage(props: props) {
                     color: '#fff',
                     marginLeft: '10px',
                 }} onClick={() => {
-                    window.location.replace("https://github.com/phatdev12")
+                    var browser = navigator.appName;
+                    if(browser == "Microsoft Internet Explorer") window.opener = self;
+
+                    const dualScreenLeft =  window.screenX;
+                    const dualScreenTop = window.screenY;
+
+                    const zoom = screen.width/window.screen.availWidth;
+                    const x = ((screen.width - screen.width/1.5)>>1)/zoom + dualScreenLeft;
+                    const y = ((screen.height - screen.height/1.5)>>1)/zoom + dualScreenTop;
+
+                    window.open(`https://github.com/${window.owner}`, '', `location=0,toolbar=no,height=${screen.height/1.5},width=${screen.width/1.5},left=${x},top=${y}`);
+                    window.moveTo(0,0);
                 }}>Follow me on github</button></li>
             </ul>
             <div data-scroll-section style={{

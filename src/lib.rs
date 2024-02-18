@@ -25,6 +25,48 @@ pub extern "C" fn generate_random_string(length: usize) -> String {
 }
 
 #[wasm_bindgen]
+pub extern "C" fn mdresolve(data: &str) -> String {
+    let mut pair: [usize; 2] = [0, 0];
+    let mut data = data.to_string();
+
+    let mut i = 0;
+
+    while i < data.len() {
+        let mut cache = String::new();
+        if data.chars().nth(i) == Some('>') && data.chars().nth(i - 1) == Some('-') {
+            let mut j = i;
+
+            while j > 0 && !cache.ends_with("!<") {
+                if cache.starts_with(">-") {
+                    pair[1] = i;
+                }
+
+                if let Some(ch) = data.chars().nth(j) {
+                    cache.push(ch);
+                }
+
+                j -= 1;
+            }
+
+            if cache.ends_with("!<") {
+                pair[0] = j;
+            } else {
+                continue;
+            }
+
+            data = format!("{}{}", &data[..pair[0]], &data[pair[1] + 1..]);
+            pair[0] = 0;
+            pair[1] = 0;
+            i = data.len()-i-1;
+        }
+        i+=1;
+    }
+
+    data
+}
+
+
+#[wasm_bindgen]
 pub async fn jsonRequest(host: String, endpoint: String, ssl: bool) -> Result<JsValue, JsValue> {
     let mut opts = RequestInit::new();
     opts.method("GET");
